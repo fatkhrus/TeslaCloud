@@ -193,7 +193,7 @@ void setTimerPeriod(int period){
     if (period<1000) period=1000;
     requesttimer.setTime(period);
   }
-char* readValue(String name){
+char* readValue(const char* name){
     for (int i=0; i<tags.size();i++){   
         if (tags[i].name==name)
         return tags[i].tagvalue.buf;
@@ -204,7 +204,7 @@ char* readValue(String name){
       return &c;
   }
  
-  void writeValue(mString<TAGNAME_SIZE> name, int value){
+  void writeValue(const char* name, int value){
     
       for (int i=0; i<tags.size();i++){
         if (tags[i].name==name){
@@ -213,7 +213,7 @@ char* readValue(String name){
         }
       }
   }
-  void writeValue(mString<TAGNAME_SIZE> name, float value){
+  void writeValue(const char* name, float value){
    
       for (int i=0; i<tags.size();i++){   
         if (tags[i].name==name){
@@ -222,7 +222,7 @@ char* readValue(String name){
         }
       }
   }
-  void writeValue(mString<TAGNAME_SIZE> name, bool value){
+  void writeValue(const char* name, bool value){
      for (int i=0; i<tags.size();i++){   
         if (tags[i].name==name){
           tags[i].readValue(value);
@@ -245,7 +245,7 @@ char* readValue(String name){
   void setPort(uint16_t port){
     this->port = port;
   }
-    void setTeslaCloudConfig(TeslaCloudConfig cloudconfig){
+  void setTeslaCloudConfig(TeslaCloudConfig cloudconfig){
     this->cloudconfig = cloudconfig;
   }
   TeslaCloudConfig getTeslaCloudConfig(){
