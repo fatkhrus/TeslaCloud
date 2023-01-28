@@ -21,7 +21,7 @@ esp8266, esp32, Arduino
 
 ## Content
 - [Install](#install)
-- [Dependencies] (#dependencies)
+- [Dependencies](#dependencies)
 - [Initialization](#init)
 - [Usage](#usage)
 - [Example for Arduino](#examplearduino)
