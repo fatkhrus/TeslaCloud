@@ -21,6 +21,7 @@ esp8266, esp32, Arduino
 
 ## Content
 - [Install](#install)
+- [Dependencies] (#dependencies)
 - [Initialization](#init)
 - [Usage](#usage)
 - [Example for Arduino](#examplearduino)
@@ -33,6 +34,18 @@ esp8266, esp32, Arduino
     - Unzip and put in *C:\Program Files\Arduino\libraries* (Windows x32)
     - Unpack and put in *Documents/Arduino/libraries/*
     - (Arduino IDE) automatic installation from .zip: *Sketch/Include library/Add .ZIP library…* and specify the downloaded archive
+	
+<a id="dependencies"></a>
+## Dependencies
+TeslaCloud use some external libraries. You have to install it also:
+	- ArduinoJson:https://github.com/bblanchon/ArduinoJson
+	- Array: https://github.com/janelia-arduino/Array
+	- mString: https://github.com/GyverLibs/mString
+	- TimerMs: https://github.com/GyverLibs/TimerMs
+	- UnixTime: https://github.com/GyverLibs/UnixTime
+	- GyverNTP: https://github.com/GyverLibs/GyverNTP
+	- GyverPortal: https://github.com/GyverLibs/GyverPortal
+	
 
 <a id="init"></a>
 ## Initialization
@@ -121,7 +134,7 @@ void setup(){
 }
 
 void loop(){    
-  if (cloudclient.run());
+  if (cloudclient.run()); //every cycle request pins and if the value is changed send to the Tesla Cloud. Also if new value comes from the Cloud it will be written into the output tag.
 }
 ```
 <a id="exampleesp"></a>
@@ -137,7 +150,7 @@ const char* password = "password"; //your router's password
 TeslaCloud cloudclient("username","password",1); //create cloud client with username, password of Tesla Cloud account and deviceid
 
 void setup(){
-  Serial.begin(9600);
+  Serial.begin(115200);
  
   
   cloudclient.connect(ssid, password); //connect to Wi-Fi by using ssid and password
@@ -150,6 +163,6 @@ void setup(){
 }
 
 void loop(){    
-  if (cloudclient.run());
+  if (cloudclient.run());//every cycle request pins and if the value is changed send to the Tesla Cloud. Also if new value comes from the Cloud it will be written into the output tag.
 }
 ```

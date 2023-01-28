@@ -1,0 +1,37 @@
+#######################################
+# Syntax Coloring Map For TeslaCloud
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+TeslaCloud	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+connect	KEYWORD2
+setTimerPeriod	KEYWORD2
+addTag	KEYWORD2
+setHost	KEYWORD2
+readValue	KEYWORD2
+writeValue	KEYWORD2
+setPort	KEYWORD2
+getTagMaxCount	KEYWORD2
+run	KEYWORD2
+setTeslaCloudConfig	KEYWORD2
+getTeslaCloudConfig	KEYWORD2
+setWiFiConfig	KEYWORD2
+getWiFiConfig	KEYWORD2
+setDebugFileMessage	KEYWORD2
+setFS	KEYWORD2
+getFS KEYWORD2
+setTimeServerConfig	KEYWORD2
+setDebugConfig	KEYWORD2
+setScreenConfig	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
