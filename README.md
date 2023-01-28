@@ -38,7 +38,6 @@ esp8266, esp32, Arduino
 ```cpp
 TeslaCloud teslacloud; // default init
 TeslaCloud teslacloud(username, userpassword, deviceid);// User name for Tesla Cloud account, password for Tesla Cloud account, ID of the device from 1 to 255
-              
 ```
 <a id="usage"></a>
 ## Usage
@@ -92,7 +91,6 @@ void setScreenConfig(ScreenConfig config);//set screen configuration (ONLY FOR E
 //      uint8_t usescreenfiles;  //use or not screens for cloud in this device
 //      char mainscreen[20];	//main screen name. Screen uploaded by cloud when user firts open Screen tab
 //    };
-
 ```
 ### Requirements
 - You need to call `run()` in the main loop of the program `loop()`, it synchronizes communication with Tesla Clout according to its timer.
