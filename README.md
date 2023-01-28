@@ -41,7 +41,7 @@ TeslaCloud teslacloud(username, userpassword, deviceid);// User name for Tesla C
 ```
 <a id="usage"></a>
 ## Usage
-```
+```cpp
 void connect();// connect to Tesla Cloud. You have to setup WI-FI settings for ESP devices and Ethernet settings for Arduino devices
 void connect(const char* ssid, const char *password);// connect to Tesla Cloud by using Wi-Fi. ssid of the router, password of the router
 void connect(IPAddress local,const byte mac[]=NULL);// connect to Tesla Cloud and bind current device to IP address (ONLY FOR ARDUINO)
