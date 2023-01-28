@@ -1,11 +1,12 @@
 # TeslaCloud C++ library
 
-Communication protocol for connecting to TeslaCloud by using TeslaSCADA possibilities.
-### TeslaSCADA is a SCADA that supports many industrial and IoT protocols (OPC UA, Modbus, Siemens ISO/TCP, MQTT, Ethernet/IP, FINS/TCP and others) for connecting to hardware and visualize industrial processes.
+Communication protocol for connecting to TeslaCloud by using TeslaSCADA2 possibilities.
+### TeslaSCADA2 is a SCADA that supports many industrial and IoT protocols (OPC UA, Modbus, Siemens ISO/TCP, MQTT, Ethernet/IP, FINS/TCP and others) for connecting to hardware and visualize industrial processes.
 TeslaSCADA is HMI/SCADA for Windows, MacOS, Linux, Android and iOS.
 It is a set of native multi-platform applications and services for developing Human Machine Interfaces for real time monitoring of industrial PLC based systems and processes. 
 TeslaSCADA products allow the control of automated processes to be extended to any device like PC, smartphone, tablet or even smartwatch. 
 In last versions of TeslaSCADA it's possible to represent all datas in the cloud.
+For more information about teslascada visit our site: https://teslascada.com
  
  ### TeslaCloud is a library for connecting IoT hardware to the cloud.
 - With TeslaCloud Library you can connect most popular hardwares (including ESP8266, ESP32, all Arduinos)to the Tesla Cloud.
