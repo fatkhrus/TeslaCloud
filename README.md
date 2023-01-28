@@ -38,8 +38,7 @@ esp8266, esp32, Arduino
 <a id="dependencies"></a>
 ## Dependencies
 TeslaCloud use some external libraries. You have to install it also:
-
-	- ArduinoJson:https://github.com/bblanchon/ArduinoJson
+	- ArduinoJson: https://github.com/bblanchon/ArduinoJson
     - Array: https://github.com/janelia-arduino/Array
     - mString: https://github.com/GyverLibs/mString
     - TimerMs: https://github.com/GyverLibs/TimerMs
