@@ -50,8 +50,8 @@ TeslaCloud teslacloud(username, userpassword, deviceid);// User name for Tesla C
 <a id="usage"></a>
 ## Usage
 ```cpp
-void connect();// connect to Tesla Cloud. You have to setup WI-FI settings for ESP devices and Ethernet settings for Arduino devices
-void connect(const char* ssid, const char *password);// connect to Tesla Cloud by using Wi-Fi. ssid of the router, password of the router
+void connect();// connect to Tesla Cloud. You have to setup first WI-FI settings for ESP devices and Ethernet settings for Arduino devices
+void connect(const char* ssid, const char *password);// connect to Tesla Cloud by using Wi-Fi. ssid of the router, password of the router (ONLY FOR ESP)
 void connect(IPAddress local,const byte mac[]=NULL);// connect to Tesla Cloud and bind current device to IP address (ONLY FOR ARDUINO)
 void connect(IPAddress local, IPAddress dns, IPAddress gateway, IPAddress subnet, const byte mac[]=NULL);// connect to Tesla Cloud and use the whole IP addresses (local, dns, gateway, subnet)(ONLY FOR ARDUINO)
 void setTimerPeriod(int period);//set communication period in milliseconds between Tesla Cloud and device. Should be greater then 1000ms.
@@ -75,7 +75,7 @@ void setTeslaCloudConfig(TeslaCloudConfig cloudconfig); //setup Tesla Cloud conf
 //  uint8_t devicenumber=0; //number of the device
 //};
 TeslaCloudConfig getTeslaCloudConfig(); //return Tesla Cloud configuration
-void setWiFiConfig(WiFiConfig wificonfig); // set WI-FI configuration for the device
+void setWiFiConfig(WiFiConfig wificonfig); // set WI-FI configuration for the device (ONLY FOR ESP)
 WiFiConfig getWiFiConfig(); // get WI-FI configuration for the device
 // struct WiFiConfig{ // WIFIConfig is a struct with ssid and password for Wi-Fi connection.
 //      char ssid[25];
@@ -101,7 +101,7 @@ void setScreenConfig(ScreenConfig config);//set screen configuration (ONLY FOR E
 //    };
 ```
 ### Requirements
-- You need to call `run()` in the main loop of the program `loop()`, it synchronizes communication with Tesla Clout according to its timer.
+- You need to call `run()` in the main loop of the program `loop()`, it synchronizes communication with Tesla Cloud according to its timer.
 
 <a id="examplearduino"></a>
 ## Example for Arduino
