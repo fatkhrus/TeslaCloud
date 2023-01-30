@@ -7,6 +7,8 @@ It is a set of native multi-platform applications and services for developing Hu
 TeslaSCADA products allow the control of automated processes to be extended to any device like PC, smartphone, tablet or even smartwatch. 
 In last versions of TeslaSCADA it's possible to represent all datas in the cloud.
 For more information about teslascada visit our site: https://teslascada.com
+Wiki for TeslaCloud:https://github.com/fatkhrus/TeslaCloud/wiki
+[Russian version](https://github-com.translate.goog/fatkhrus/TeslaCloud/wiki?_x_tr_sl=en&_x_tr_tl=ru)
  
  ### TeslaCloud is a library for connecting IoT hardware to the cloud.
 - With TeslaCloud Library you can connect most popular hardwares (including ESP8266, ESP32, all Arduinos)to the Tesla Cloud.
@@ -82,7 +84,7 @@ WiFiConfig getWiFiConfig(); // get WI-FI configuration for the device
 //      char pass[25];
 //    };
 void setDebugFileMessage(String msg)//set debug message into the debug file (ONLY FOR ESP)
-void setFS(fs::FS *useFS) //set file system LittleFS or SNIFFS (ONLY FOR ESP)
+void setFS(fs::FS *useFS) //set file system LittleFS or SPIFFS (ONLY FOR ESP)
 fs::FS * getFS();//get file system
 void setTimeServerConfig(TimeServerConfig config);//set time server config (ONLY FOR ESP)
 //struct TimeServerConfig{
@@ -118,12 +120,12 @@ void setup(){
   Serial.begin(9600);
  
   //cloudclient.connect(); //connect by getting IP address for DHCP. This command takes more sketch memory than connecting by using static IP address
-  cloudclient.connect(ip, mac); //connect by using static IP address
+  cloudclient.connect(ip); //connect by using static IP address
   
   Tag tag("BUT", 7, INPUT_PULLUP); //setup tag with name "BUT" for reading value from 7 pin 
   cloudclient.addTag(tag); // bind tag to the cloud. In the loop every timer period (default 1000ms) pin be readed and send to the cloud if the value is changed
   
-   Tag tag2("L3", 3, OUTPUT, ANALOG_PIN); //setup tag with name "L3" for writing value to 3 pin
+   Tag tag2("L3", 3, OUTPUT, DIGITAL_PIN); //setup tag with name "L3" for writing value to 3 pin
   cloudclient.addTag(tag2); // bind tag the cloud
 }
 
@@ -152,7 +154,7 @@ void setup(){
   Tag tag("BUT", 7, INPUT_PULLUP); //setup tag with name "BUT" for reading value from 7 pin 
   cloudclient.addTag(tag); // bind tag to the cloud. In the loop every timer period (default 1000ms) pin be readed and send to the cloud if the value is changed
   
-   Tag tag2("L3", 3, OUTPUT, ANALOG_PIN); //setup tag with name "L3" for writing value to 3 pin
+   Tag tag2("L3", 3, OUTPUT, DIGITAL_PIN); //setup tag with name "L3" for writing value to 3 pin
   cloudclient.addTag(tag2); // bind tag the cloud
 }
 

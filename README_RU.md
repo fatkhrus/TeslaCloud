@@ -82,7 +82,7 @@ WiFiConfig getWiFiConfig(); //вернуть WI-FI конфигурацию дл
 //      char pass[25];
 //    };
 void setDebugFileMessage(String msg)//записать сообщение в файл отладки (ТОЛЬКО ДЛЯ ESP)
-void setFS(fs::FS *useFS) //указать файловую систему LittleFS или SNIFFS (ТОЛЬКО ДЛЯ ESP)
+void setFS(fs::FS *useFS) //указать файловую систему LittleFS или SPIFFS (ТОЛЬКО ДЛЯ ESP)
 fs::FS * getFS();//получить файловую систему
 void setTimeServerConfig(TimeServerConfig config);//установить конфигурацию сервера времени NTP (ONLY FOR ESP)
 //struct TimeServerConfig{
@@ -118,12 +118,12 @@ void setup(){
   Serial.begin(9600);
  
   //cloudclient.connect(); //соединение при помощи получения IP адреса из DHCP. Это команда требует большей памяти скетча чем задание статического IP адреса
-  cloudclient.connect(ip, mac); //соединение с использование статического IP адреса
+  cloudclient.connect(ip); //соединение с использование статического IP адреса
   
   Tag tag("BUT", 7, INPUT_PULLUP); //создаем тег с именем "BUT" для чтения с 7 контакта 
   cloudclient.addTag(tag); // привязываем тег к клиенту. В цикле каждый период времени (по умолчанию 1000ms) значение контакта считывается и передается в облако
   
-   Tag tag2("L3", 3, OUTPUT, ANALOG_PIN); //создаем тег с именен "L3" для записи его значения из облака в 3 контакт
+   Tag tag2("L3", 3, OUTPUT, DIGITAL_PIN); //создаем тег с именен "L3" для записи его значения из облака в 3 контакт
   cloudclient.addTag(tag2); //привязка тега к облаку
 }
 
@@ -152,7 +152,7 @@ void setup(){
   Tag tag("BUT", 7, INPUT_PULLUP); //создаем тег с имененм "BUT" для чтения значения с 7 контакта 
   cloudclient.addTag(tag); // привязываем тег к клиенту. В цикле каждый период времени (по умолчанию 1000ms) значение контакта считывается и передается в облако
   
-   Tag tag2("L3", 3, OUTPUT, ANALOG_PIN); //создаем тег с именен "L3" для записи его значения из облака в 3 контакт
+   Tag tag2("L3", 3, OUTPUT, DIGITAL_PIN); //создаем тег с именен "L3" для записи его значения из облака в 3 контакт
   cloudclient.addTag(tag2); //привязка тега к облаку
 }
 
