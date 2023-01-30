@@ -7,8 +7,9 @@ It is a set of native multi-platform applications and services for developing Hu
 TeslaSCADA products allow the control of automated processes to be extended to any device like PC, smartphone, tablet or even smartwatch. 
 In last versions of TeslaSCADA it's possible to represent all datas in the cloud.
 For more information about teslascada visit our site: https://teslascada.com
-Wiki for TeslaCloud:https://github.com/fatkhrus/TeslaCloud/wiki
-[Russian version](https://github-com.translate.goog/fatkhrus/TeslaCloud/wiki?_x_tr_sl=en&_x_tr_tl=ru)
+* Wiki for TeslaCloud:https://github.com/fatkhrus/TeslaCloud/wiki
+
+* [Russian version](https://github-com.translate.goog/fatkhrus/TeslaCloud/wiki?_x_tr_sl=en&_x_tr_tl=ru)
  
  ### TeslaCloud is a library for connecting IoT hardware to the cloud.
 - With TeslaCloud Library you can connect most popular hardwares (including ESP8266, ESP32, all Arduinos)to the Tesla Cloud.
