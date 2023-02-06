@@ -69,7 +69,8 @@ enum StatusCode{
 class TeslaCloud{
 public:
   TeslaCloud(){
-      
+      this->host ="cloud.teslascada.com";
+	  this->port = 7002;
   }
   TeslaCloud(const char* username, const char* userpassword, uint8_t deviceid=0,
               const char *host="cloud.teslascada.com", uint16_t port = 7002){
@@ -745,8 +746,8 @@ void removeRequest(int id, int route){
   }
 void generateDeviceRequest(uint32_t id, int route){
       StaticJsonDocument<REQUEST_SIZE> doc;
-      doc["b"]["username"] = cloudconfig.username;
-      doc["b"]["password"]= cloudconfig.password;
+      doc["b"]["u"] = cloudconfig.username;
+      doc["b"]["p"]= cloudconfig.password;
       generateHeaderAndSend(doc, id, route);
   }
   #if defined(ESP8266) || defined(ESP32)

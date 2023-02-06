@@ -9,8 +9,8 @@ void setup(){
  delay(1000);
   Serial.begin(9600);
   Serial.println("HELLO");
-  cloudclient.setHost("192.168.1.2");
-  cloudclient.setPort(7002);
+  //cloudclient.setHost("192.168.1.8");
+  //cloudclient.setPort(7002);
   cloudclient.connect(ip, mac);
   
   Tag tag("BUT", 7, INPUT_PULLUP);
