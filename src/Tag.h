@@ -138,9 +138,7 @@ private:
   }
 
   void setValue(float value){
-  
       if (value==oldvalue) return;
-   
       if (value>oldvalue && (value-oldvalue)<deadband) return;
       if (value<oldvalue && (oldvalue-value)<deadband) return; 
       oldvalue = value;

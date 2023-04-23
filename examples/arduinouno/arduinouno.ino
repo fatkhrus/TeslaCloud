@@ -3,14 +3,13 @@
 
 byte mac[]={0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 IPAddress ip(192,168,1,55);
-TeslaCloud cloudclient("user","111111",5);
+TeslaCloud cloudclient("username","password",5);
 
 void setup(){
  delay(1000);
   Serial.begin(9600);
   Serial.println("HELLO");
-  //cloudclient.setHost("192.168.1.8");
-  //cloudclient.setPort(7002);
+ // cloudclient.connect();
   cloudclient.connect(ip, mac);
   
   Tag tag("BUT", 7, INPUT_PULLUP);

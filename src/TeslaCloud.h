@@ -158,7 +158,10 @@ public:
   }
   void addTag(Tag tag, TagCloud tagcloud){
     
-    tag.tagvalue = tag.readFromDevice();
+	tag.oldvalue = tag.readFromDevice();
+    tag.tagvalue = tag.oldvalue;
+	tag.update = false;
+	
     tags.push_back(tag);
     tagclouds.push_back(tagcloud);    
   }
@@ -285,6 +288,7 @@ protected:
 
 void clientwrite(char strrequest[REQUEST_SIZE]){
   client.write(strrequest);
+  client.flush();
 }
 void connectToTeslaCloud(){
     if (state== NOTCONNECTED)
@@ -641,14 +645,15 @@ private:
 
 void checkTagsUpdate(){
  if (state!=AUTHORIZED) return;
- for (int i=0; i<tags.size();i++){   
+ for (int i=0; i<tags.size();i++){
       tags[i].run();
+	 
       if (tags[i].update){
              writeTag(i);
             #if defined(ESP8266) || defined(ESP32)
              if (tags[i].history)
                writeHistory(tags[i]);
-              #endif
+            #endif
             tags[i].update = false;
       }
     }
@@ -662,7 +667,7 @@ void addRequest(Request request){
 void writeTag(uint8_t tagid){
   
   
-    removeRequestWithTagID(tagid);
+    if (!removeRequestWithTagID(tagid)) return;
   
     Request request(WRITE_COMMAND);
     //request.tagname = tag.name;
@@ -673,17 +678,18 @@ void writeTag(uint8_t tagid){
    // generateShortWriteRequestBody(tag,unix(),request.body);
     addRequest(request);
   }
-  void removeRequestWithTagID(uint8_t tagid){
+  bool removeRequestWithTagID(uint8_t tagid){
     int i;
     for (i=0; i<this->requests.size();i++)
         if (requests[i].route==WRITE_COMMAND && requests[i].tagid==tagid){
           #if defined(ESP8266) || defined(ESP32)
-            if (requests[i].tagcloudid>=0) return;
+            if (requests[i].tagcloudid>=0) return false; //don't remove full write request
           #endif
           break;
         }
     if (i<this->requests.size())
         this->requests.remove(i);
+	return true;
   }
  void keepalive(){
        // LOG("keepalive");
