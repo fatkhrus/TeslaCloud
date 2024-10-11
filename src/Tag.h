@@ -14,19 +14,15 @@ class Tag{
     this->tagvalue="0";
 	this->mode = 100;
   }
-  Tag(const char* name){
+  Tag(const char* name):Tag(){
     this->name = name;
-    Tag();
-    
   }
-  Tag(const char* name, uint8_t pin, uint8_t mode, pinType pintype=DIGITAL_PIN){
-    this->name = name;
+  Tag(const char* name, uint8_t pin, uint8_t mode, pinType pintype=DIGITAL_PIN):Tag(name){
     this->pin = pin;
     this->mode = mode;
     this->pintype=pintype;
-    this->update = false;
     pinMode(pin, mode);
- 
+	readFromDevice();
   }
   float readFromDevice(){
  #ifdef ESP32

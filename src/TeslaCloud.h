@@ -90,7 +90,8 @@ public:
          connectToTeslaCloud();
 } 
 #if defined(ESP8266) || defined(ESP32)
-  void connect(const char* ssid, const char *password){
+  virtual void connect(const char* ssid, const char *password){
+	   Serial.println("TeslaCloud:connect");
       strcpy(wificonfig.ssid, ssid);
       strcpy(wificonfig.pass, password);
       connect();
@@ -107,7 +108,8 @@ public:
   void setDebugFileMessage(String msg){
     if (!debugconfig.usedebugfile) return;
     if (_fs)
-      DebugFileMessage(msg, ntp.year(), ntp.month(), ntp.day(), _fs);
+      DebugFileMessage(msg, NTP.year(), NTP.month(), NTP.day(), _fs);
+	
   }
    void setFS(fs::FS *useFS) {
         _fs = useFS;
@@ -151,7 +153,7 @@ public:
  void setErrorMessage(String msg){
     errorMessage = msg;
   }
-   void addTag(Tag tag){
+   virtual void addTag(Tag tag){
     TagCloud tagcloud;
     tagcloud.usevalue = false;
     addTag(tag, tagcloud);   
@@ -265,12 +267,12 @@ char* readValue(const char* name){
     #endif
   }
 
-bool run(){
+virtual bool run(){
     if (state== NOTCONNECTED) return false;
-    #if defined(ESP8266) || defined(ESP32)
+  /*  #if defined(ESP8266) || defined(ESP32)
     if (tick())
         checkStoragePeriods();
-    #endif
+    #endif*/
      if (keepalivetimer.tick()){
        // LOG("keep");
         keepalive();
@@ -285,19 +287,21 @@ bool run(){
   }
 
 protected:
-
-void clientwrite(char strrequest[REQUEST_SIZE]){
-  client.write(strrequest);
-  client.flush();
-}
-void connectToTeslaCloud(){
-    if (state== NOTCONNECTED)
-      return;
+TimerMs requesttimer;
+enum connectionState state;
+const char* host;
+uint16_t port;
+WiFiConfig wificonfig;
+WiFiClient client;
+TeslaCloudConfig cloudconfig;
+Array<Tag, TAG_COUNT_MAX> tags;
+virtual void connectToTeslaCloud(){
+    if (state== NOTCONNECTED) return;
     lastresponsetime = millis();
     #if defined(ESP8266) || defined(ESP32)
-      ntp.begin();
-      ntp.updateNow();
-      LOG2(ntp.timeString(),":connectToTeslaCloud");
+      NTP.begin();
+      NTP.updateNow();
+      LOG2(NTP.timeString(),":connectToTeslaCloud");
     #else
       LOG("connectToTeslaCloud");
     #endif
@@ -316,36 +320,41 @@ void connectToTeslaCloud(){
       }    
     }
   }
+void clientwrite(char strrequest[REQUEST_SIZE]){
+  client.write(strrequest);
+  client.flush();
+}
+
  #if defined(ESP8266) || defined(ESP32)
  bool synced(){
-    return ntp.synced();
+    return NTP.synced();
   }
 void updateNow(){
-    ntp.updateNow();
+    NTP.updateNow();
   }
 String timeString(){
-    return ntp.timeString();
+    return NTP.timeString();
   }
 String dateString(){
-    return ntp.dateString();
+    return NTP.dateString();
   }
 void setGMT(int8_t timezone){
-    ntp.setGMT(timezone);
+    NTP.setGMT(timezone);
   }
 void setTimeServerHost(const char* host){
-    ntp.setHost(host);
+    NTP.setHost(host);
   }
 bool tick(){
-    return ntp.tick();
+    return NTP.tick();
   }
 
 void writeHistory(Tag tag){
     if (_fs)
-     writeFileHistory(tag, ntp.unix(), ntp.year(), ntp.month(), ntp.day(), _fs);
+     writeFileHistory(tag, NTP.getUnix(), NTP.year(), NTP.month(), NTP.day(), _fs);
   }
 void checkStoragePeriods(){
     if (_fs)
-     checkFilesStoragePeriods(tags, timeserver.timezone,debugconfig.usedebugfile, debugconfig.storageperiod,ntp.unix(), _fs);
+     checkFilesStoragePeriods(tags, timeserver.timezone,debugconfig.usedebugfile, debugconfig.storageperiod,NTP.getUnix(), _fs);
   }
 void handleGetHistoryData(StaticJsonDocument<RESPONSE_SIZE> doc){
   if (_fs){
@@ -509,7 +518,7 @@ void handleGetScreenRequest(StaticJsonDocument<RESPONSE_SIZE> doc){
   #endif
 
   
-void readClient(){
+virtual void readClient(){
 if (!client.connected()){
        requests.clear();
       state = DISCONNECTED;
@@ -531,7 +540,33 @@ if (!client.connected()){
     
    
 }
-
+void checkTagsUpdate(){
+ if (state!=AUTHORIZED) return;
+ for (int i=0; i<tags.size();i++){
+      tags[i].run();
+	 
+      if (tags[i].update){
+             writeTag(i);
+            /*#if defined(ESP8266) || defined(ESP32)
+             if (tags[i].history)
+               writeHistory(tags[i]);
+            #endif*/
+            tags[i].update = false;
+      }
+    }
+}
+virtual void writeTag(uint8_t tagid){
+    if (!removeRequestWithTagID(tagid)) return;
+  
+    Request request(WRITE_COMMAND);
+    //request.tagname = tag.name;
+    request.tagid = tagid;
+     #if defined(ESP8266) || defined(ESP32)
+      request.tagcloudid = -1;
+    #endif
+   // generateShortWriteRequestBody(tag,unix(),request.body);
+    addRequest(request);
+  }
   private:
   void sendReadConfirmationResponse(int id){
        Request request(READ_COMMAND);
@@ -643,41 +678,14 @@ void handleResponse(char* response){
   }
 private:
 
-void checkTagsUpdate(){
- if (state!=AUTHORIZED) return;
- for (int i=0; i<tags.size();i++){
-      tags[i].run();
-	 
-      if (tags[i].update){
-             writeTag(i);
-            #if defined(ESP8266) || defined(ESP32)
-             if (tags[i].history)
-               writeHistory(tags[i]);
-            #endif
-            tags[i].update = false;
-      }
-    }
-}
+
 
 void addRequest(Request request){
    if (requests.size()>=REQUEST_COUNT_MAX)
         requests.remove(0);
     requests.push_back(request);
 }
-void writeTag(uint8_t tagid){
-  
-  
-    if (!removeRequestWithTagID(tagid)) return;
-  
-    Request request(WRITE_COMMAND);
-    //request.tagname = tag.name;
-    request.tagid = tagid;
-     #if defined(ESP8266) || defined(ESP32)
-      request.tagcloudid = -1;
-    #endif
-   // generateShortWriteRequestBody(tag,unix(),request.body);
-    addRequest(request);
-  }
+
   bool removeRequestWithTagID(uint8_t tagid){
     int i;
     for (i=0; i<this->requests.size();i++)
@@ -732,9 +740,9 @@ void removeRequest(int id, int route){
         else if (requests[i].route==WRITE_COMMAND){
                            #if defined(ESP8266) || defined(ESP32)
                              if (requests[i].tagcloudid<0)
-                                generateShortWriteRequestBody(requests[i].id, WRITE_COMMAND,tags[requests[i].tagid],ntp.unix());
+                                generateShortWriteRequestBody(requests[i].id, WRITE_COMMAND,tags[requests[i].tagid],NTP.getUnix());
                               else
-                                 generateWriteRequestBody(requests[i].id, WRITE_COMMAND,tags[requests[i].tagid],ntp.unix(), tagclouds[requests[i].tagcloudid]);
+                                 generateWriteRequestBody(requests[i].id, WRITE_COMMAND,tags[requests[i].tagid],NTP.getUnix(), tagclouds[requests[i].tagcloudid]);
                             #else
                               generateShortWriteRequestBody(requests[i].id, WRITE_COMMAND,tags[requests[i].tagid],0);
                             #endif 
@@ -860,12 +868,9 @@ void generateDeviceRequest(uint32_t id, int route){
     clientsend(buffer);
     doc.clear();
   }
-  enum connectionState state;
-  TeslaCloudConfig cloudconfig;
-  TimerMs requesttimer;
   TimerMs keepalivetimer;
   Array<Request, REQUEST_COUNT_MAX> requests;
-  Array<Tag, TAG_COUNT_MAX> tags;
+  
   #if defined(ESP8266) || defined(ESP32)
     Array<TagCloud, TAG_COUNT_MAX> tagclouds;
   #endif
@@ -876,8 +881,7 @@ void generateDeviceRequest(uint32_t id, int route){
   const uint8_t KEEPALIVE_COMMAND=3;
   const uint8_t GETSCREEN_COMMAND=4;
   const uint8_t HISTORYDATA_COMMAND=5;
-  const char* host;
-  uint16_t port;
+ 
   mString<30> token;
   SendMode mode =EXCHANGE;
   long lastresponsetime;
@@ -893,8 +897,7 @@ void generateDeviceRequest(uint32_t id, int route){
       WiFi.softAP(SP_AP_NAME);
   }
  
-  WiFiConfig wificonfig;
-  WiFiClient client;
+
   TimeServerConfig timeserver;
   DebugConfig debugconfig;
   ScreenConfig screenconfig;
@@ -904,7 +907,7 @@ void generateDeviceRequest(uint32_t id, int route){
   String historytagname = "";
   long begindate = 0;
   long enddate = 0; 
-  GyverNTP ntp;
+  //GyverNTP ntp;
   String debugmsg="";
   String debugmsg2="";
   String errorMessage="";

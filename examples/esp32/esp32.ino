@@ -17,8 +17,8 @@ void setup() {
   delay(1000);
   Serial.begin(115200);
   if (!LittleFS.begin()) Serial.println("FS Error");
- // cloudclient.setHost("192.168.1.2");
- // cloudclient.setPort(7002);
+  //cloudclient.setHost("192.168.1.3");
+  //cloudclient.setPort(7002);
   cloudclient.setFS(&LittleFS);
   websettings.setTeslaCloud(&cloudclient);
   cloudclient.connect();
