@@ -1,6 +1,7 @@
 #define DEBUG
-#include "TeslaCloudMQTT.h"
 #include <DHT.h>
+#include "TeslaCloudMQTT.h"
+
 #include "TagCloud.h"
 //#include "WebSettings.h"
 //#include <LiquidCrystal_I2C.h>
@@ -21,9 +22,9 @@ DHT dht(14, DHT11);
 void setup() {
   delay(1000);
   Serial.begin(115200);
- 
+LOG("setup");
 //if (!LittleFS.begin()) Serial.println("FS Error");
-cloudclient.setHost("192.168.0.33");
+//cloudclient.setHost("192.168.0.33");
 //cloudclient.setPort(7002);
 //cloudclient.setFS(&LittleFS);
 //websettings.setTeslaCloud(&cloudclient);
@@ -88,5 +89,6 @@ if (cloudclient.run()){
   dhthandler();
 //int sensorValue = analogRead(A0);
 //LOG(sensorValue);
-}  
+} 
+//ESP.wdtFeed(); 
 }

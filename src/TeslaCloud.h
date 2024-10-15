@@ -159,11 +159,9 @@ public:
     addTag(tag, tagcloud);   
   }
   void addTag(Tag tag, TagCloud tagcloud){
-    
 	tag.oldvalue = tag.readFromDevice();
     tag.tagvalue = tag.oldvalue;
-	tag.update = false;
-	
+	tag.update = false;	
     tags.push_back(tag);
     tagclouds.push_back(tagcloud);    
   }
@@ -269,6 +267,7 @@ char* readValue(const char* name){
 
 virtual bool run(){
     if (state== NOTCONNECTED) return false;
+	checkWifiAvailable();
   /*  #if defined(ESP8266) || defined(ESP32)
     if (tick())
         checkStoragePeriods();
@@ -295,6 +294,19 @@ WiFiConfig wificonfig;
 WiFiClient client;
 TeslaCloudConfig cloudconfig;
 Array<Tag, TAG_COUNT_MAX> tags;
+void checkWifiAvailable(){
+	unsigned int failsafetimer = 3000;
+	while (WiFi.status()!=WL_CONNECTED){
+		failsafetimer--;
+		delay(1);
+		if (0==failsafetimer){
+			client.flush();
+			state== NOTCONNECTED;
+			connect();
+			return;
+		}
+	}
+}
 virtual void connectToTeslaCloud(){
     if (state== NOTCONNECTED) return;
     lastresponsetime = millis();

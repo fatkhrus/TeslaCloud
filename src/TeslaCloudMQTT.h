@@ -6,8 +6,6 @@
 
 class TeslaCloudMQTT: public TeslaCloud{
 private:
-	MQTTClient mqttclient;
-	const char* clientid;
 	
 	void subscribeTags(){
 		LOG("subscribeTags");
@@ -31,7 +29,7 @@ public:
 	}
 	TeslaCloudMQTT(const char* username, const char* userpassword, uint8_t deviceid=0,
               const char *host="cloud.teslascada.com", uint16_t port = 1883):TeslaCloud(username, userpassword,deviceid,host,port){
-    
+			this->clientid = "clientid";
 	}
 	TeslaCloudMQTT(const char* id, const char* username, const char* userpassword, uint8_t deviceid=0,
               const char *host="cloud.teslascada.com", uint16_t port = 1883):TeslaCloud(username, userpassword,deviceid,host,port){
@@ -41,15 +39,15 @@ public:
 		this->clientid = id;
 	}
 	virtual void addTag(Tag tag){
-		LOG("addTag");
-		LOG(tag.mode);
-		TeslaCloud::addTag(tag);
-		LOG("addTag2");
-		LOG(tag.mode);
+		tag.oldvalue = tag.readFromDevice();
+		tag.tagvalue = tag.oldvalue;
+		tag.update = false;	
+		tags.push_back(tag);
 		subscribeTag(tag);
 	}
 	virtual bool run(){
 		if (state== NOTCONNECTED) return false;
+		checkWifiAvailable();
 		mqttclient.loop();
 		delay(10);
 		if (!mqttclient.connected()){
@@ -67,6 +65,8 @@ public:
 	}
 	
 protected:
+	MQTTClient mqttclient;
+	const char* clientid;
 	void messageReceived(String &topic, String &payload){
 		LOG3(dateString()+timeString(),topic,payload);
 		mString<TAGNAME_SIZE> name;

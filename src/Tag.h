@@ -22,7 +22,6 @@ class Tag{
     this->mode = mode;
     this->pintype=pintype;
     pinMode(pin, mode);
-	readFromDevice();
   }
   float readFromDevice(){
  #ifdef ESP32
