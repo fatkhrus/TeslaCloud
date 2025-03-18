@@ -2,14 +2,25 @@
 #define TeslaCloud_h
 #include <ArduinoJson.h>
 
-#ifdef ESP8266
+/*#ifdef ESP8266
   #include <ESP8266WiFi.h>    // esp8266
 #elif ESP32
   #include <WiFi.h>           // esp32
 #else 
   #include <SPI.h>            //Arduino
   #include <Ethernet.h>
+#endif*/
+#if defined(ESP8266)
+	#include <ESP8266WiFi.h>    // esp8266
+#elif defined(ESP32)
+	#include <WiFi.h>
+#else
+	#include <SPI.h>
+	#include <Ethernet.h>
 #endif
+
+
+	
 
 #if defined(ESP8266) || defined(ESP32)
     #include "FS.h"
@@ -189,7 +200,7 @@ public:
             
         }
       void addTag(Tag tag){
-         tag.tagvalue = tag.readFromDevice();
+         //tag.tagvalue = tag.readFromDevice();
          tags.push_back(tag);  
         }        
 #endif
@@ -313,7 +324,8 @@ virtual void connectToTeslaCloud(){
     #if defined(ESP8266) || defined(ESP32)
       NTP.begin();
       NTP.updateNow();
-      LOG2(NTP.timeString(),":connectToTeslaCloud");
+	  NTP.setPeriod(60);
+      LOG2(NTP.toString(),":connectToTeslaCloud");
     #else
       LOG("connectToTeslaCloud");
     #endif
@@ -345,16 +357,16 @@ void updateNow(){
     NTP.updateNow();
   }
 String timeString(){
-    return NTP.timeString();
+    return NTP.toString();
   }
-String dateString(){
-    return NTP.dateString();
-  }
+/*String dateString(){
+    return NTP.toString();
+  }*/
 void setGMT(int8_t timezone){
     NTP.setGMT(timezone);
   }
 void setTimeServerHost(const char* host){
-    NTP.setHost(host);
+    NTP.setHost(String(host));
   }
 bool tick(){
     return NTP.tick();
@@ -364,10 +376,10 @@ void writeHistory(Tag tag){
     if (_fs)
      writeFileHistory(tag, NTP.getUnix(), NTP.year(), NTP.month(), NTP.day(), _fs);
   }
-void checkStoragePeriods(){
+/*void checkStoragePeriods(){
     if (_fs)
      checkFilesStoragePeriods(tags, timeserver.timezone,debugconfig.usedebugfile, debugconfig.storageperiod,NTP.getUnix(), _fs);
-  }
+  }*/
 void handleGetHistoryData(StaticJsonDocument<RESPONSE_SIZE> doc){
   if (_fs){
     LOG("handleGetHistoryData");
@@ -617,7 +629,7 @@ virtual void writeTag(uint8_t tagid){
   }
 void handleResponse(char* response){
    #if defined(ESP8266) || defined(ESP32)
-    LOG3(dateString()+" "+timeString(),String(":RESPONSE:"),String(response));
+    LOG3(timeString(),String(":RESPONSE:"),String(response));
   #else
     LOG(response);
   #endif
@@ -682,7 +694,7 @@ void handleResponse(char* response){
     if (mode!=EXCHANGE) return;
     //Serial.println(strrequest);
     #if defined(ESP8266) || defined(ESP32)
-    LOG3(dateString()+" "+timeString(),String(":REQUEST:"),String(strrequest));
+    LOG3(timeString(),String(":REQUEST:"),String(strrequest));
     #else
     LOG(strrequest);
     #endif
@@ -787,8 +799,8 @@ void generateDeviceRequest(uint32_t id, int route){
     doc["b"]["v"]=tag.tagvalue.buf;
     doc["b"]["dt"]=time;
     if (tagcloud.usevalue){
-      if (tag.history)
-      doc["b"]["h"]=tag.history;
+      //if (tag.history)
+      //doc["b"]["h"]=tag.history;
       doc["b"]["u"]=tagcloud.usevalue;
       if (tagcloud.unit!="")
           doc["b"]["un"]=tagcloud.unit;

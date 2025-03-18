@@ -39,9 +39,9 @@ public:
 		this->clientid = id;
 	}
 	virtual void addTag(Tag tag){
-		tag.oldvalue = tag.readFromDevice();
-		tag.tagvalue = tag.oldvalue;
-		tag.update = false;	
+		//tag.oldvalue = tag.readFromDevice();
+		//tag.tagvalue = tag.oldvalue;
+		//tag.update = false;	
 		tags.push_back(tag);
 		subscribeTag(tag);
 	}
@@ -68,7 +68,7 @@ protected:
 	MQTTClient mqttclient;
 	const char* clientid;
 	void messageReceived(String &topic, String &payload){
-		LOG3(dateString()+timeString(),topic,payload);
+		LOG3(timeString(),topic,payload);
 		mString<TAGNAME_SIZE> name;
 		name = topic;
 		mString<TAGVALUE_SIZE> value;
@@ -84,13 +84,17 @@ protected:
 		LOG("TeslaCloudMQTT:connectToTeslaCloud");
 		NTP.begin();
 		NTP.updateNow();
-		LOG2(NTP.timeString(),":connectToTeslaCloud");
-		
-		LOG(this->clientid);
+		LOG2(NTP.toString(),":connectToTeslaCloud");
+		LOG(clientid);
+		int len1 = strlen(clientid);
+		char *result = new char[len1+11];
+		strcpy(result, clientid);
+		strcat(result, "_device");
+		LOG(result);
 		if (state== NOTCONNECTED) return;
 		mqttclient.begin(host, this->client);
 		mqttclient.setKeepAlive(60);
-		while (!mqttclient.connect(clientid, cloudconfig.username, cloudconfig.password)){
+		while (!mqttclient.connect(result, cloudconfig.username, cloudconfig.password)){
 			LOG(".");
 			delay(1000);
 		}

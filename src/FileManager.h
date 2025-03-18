@@ -7,7 +7,7 @@
 #include "Tag.h"
 #include <UnixTime.h>
 
-void checkFilesStoragePeriods(Array<Tag, TAG_COUNT_MAX> &tags, uint8_t timezone, bool usedebugfile,uint8_t storageperiod, uint32_t unix, fs::FS *fs){
+/*void checkFilesStoragePeriods(Array<Tag, TAG_COUNT_MAX> &tags, uint8_t timezone, bool usedebugfile,uint8_t storageperiod, uint32_t unix, fs::FS *fs){
     
     for (int i=0; i<tags.size();i++){
       if (!tags[i].history) continue;
@@ -51,7 +51,7 @@ void checkFilesStoragePeriods(Array<Tag, TAG_COUNT_MAX> &tags, uint8_t timezone,
       bool exist = fs->exists(debugpath.buf);
       if (exist)
         fs->remove(debugpath.buf);
-  }
+  }*/
    void createDirs(const char * path, fs::FS *fs){
   if (strchr(path, '/')) {
       Serial.printf("Create missing folders of: %s\r\n", path);

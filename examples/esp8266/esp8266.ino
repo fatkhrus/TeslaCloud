@@ -5,13 +5,13 @@
 #include "TagCloud.h"
 //#include "WebSettings.h"
 //#include <LiquidCrystal_I2C.h>
-#include <LittleFS.h>
+//#include <LittleFS.h>
 
 //TeslaCloud cloudclient;
 const char* ssid="Fatkh-2.4G"; //your router's ssid
 const char* password = "13954390"; //your router's password
 TeslaCloudMQTT cloudclient("myclientid","user","111111",1);
-
+//TeslaCloud cloudclient("user","111111",1);
 //TeslaCloudMQTT *cloudclient = new TeslaCloudMQTT("user","111111",1);
  //create cloud client with username, password of Tesla Cloud account and deviceid
 //TeslaCloud cloudclient;
@@ -36,7 +36,7 @@ dht.begin();
  // websettings.init();
   cloudclient.connect(ssid, password); //connect to Wi-Fi by using ssid and password
  // cloudclient.subscribe("#");
-  Tag tag("Temperature"); //setup tag with name "ANALOG" for reading value from 0 pin 
+  Tag tag("Temperature",dht.readTemperature()); //setup tag with name "ANALOG" for reading value from 0 pin 
  
   tag.setDeadband(0.1);//setup deadband
   /*TagCloud tagcloud; //init tagcloud
@@ -51,7 +51,7 @@ dht.begin();
   tagcloud.bgcolor2 = ColorRange(30, 50, RED);*/
   cloudclient.addTag(tag);
 
-  Tag tag2("Humidity"); //setup tag with name "ANALOG" for reading value from 0 pin 
+  Tag tag2("Humidity", dht.readHumidity()); //setup tag with name "ANALOG" for reading value from 0 pin 
   tag2.setDeadband(0.1);//setup deadband
   /*TagCloud tagcloud2; //init tagcloud
   tagcloud2.unit = "%"; //setup unit value
@@ -68,7 +68,7 @@ dht.begin();
   cloudclient.addTag(led);
   Tag analog("Analog", 0, INPUT, ANALOG_PIN); //setup tag with name "ANALOG" for reading value from 0 pin 
   analog.setScale(0,1023,0,5);//setup scale
-  analog.setDeadband(0.1);//setup deadband
+  analog.setDeadband(0.3);//setup deadband
   cloudclient.addTag(analog);
   
 }
